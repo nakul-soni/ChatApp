@@ -21,14 +21,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- Toolbar with manual hamburger -->
+            <!-- Modern Toolbar -->
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:layout_height="56dp"
+                android:background="@drawable/gradient_background"
+                android:elevation="4dp"
                 android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-                app:title="Groups">
+                app:title="Groups"
+                app:titleTextColor="@color/white">
 
                 <ImageButton
                     android:id="@+id/hamburger"
@@ -46,14 +48,15 @@
                 android:id="@+id/main"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="?attr/actionBarSize">
+                android:layout_marginTop="56dp"
+                android:background="@color/background">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:clipToPadding="false"
-                    android:padding="16dp"
+                    android:padding="8dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +69,9 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:src="@drawable/icon_add"
-                    app:backgroundTint="@android:color/holo_green_light"
+                    app:backgroundTint="@color/primary"
+                    app:tint="@color/white"
+                    app:elevation="6dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>

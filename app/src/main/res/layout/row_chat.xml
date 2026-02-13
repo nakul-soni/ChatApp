@@ -11,92 +11,86 @@
 
     </data>
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="4dp">
 
+        <!-- Received Messages (Left) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal"
+            android:gravity="start"
             android:visibility="@{chatMessage.isMine ? View.GONE : View.VISIBLE}">
-
-
-            <ImageView
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/grey_node"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginEnd="48dp"
                 android:background="@drawable/left_node_bg">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{chatMessage.text}"
-                    android:textColor="@color/black"
+                    android:textColor="@color/chat_bubble_received_text"
+                    android:textSize="15sp"
+                    android:maxWidth="260dp"
                     android:gravity="start"/>
 
-            </LinearLayout>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:text="@{chatMessage.convertTime()}"
-                android:textSize="8sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@{chatMessage.convertTime()}"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_secondary"
+                    android:gravity="end"/>
 
+            </LinearLayout>
 
         </LinearLayout>
 
-
-
-
-
+        <!-- Sent Messages (Right) -->
         <LinearLayout
             android:gravity="end"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal"
             android:visibility="@{chatMessage.isMine ? View.VISIBLE : View.GONE}">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:text="@{chatMessage.convertTime()}"
-                android:textSize="8sp"/>
-
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginStart="48dp"
                 android:background="@drawable/right_node_bg">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
+                    android:textColor="@color/chat_bubble_sent_text"
                     android:text="@{chatMessage.text}"
+                    android:textSize="15sp"
+                    android:maxWidth="260dp"
                     android:gravity="start"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@{chatMessage.convertTime()}"
+                    android:textSize="11sp"
+                    android:textColor="@color/white"
+                    android:alpha="0.8"
+                    android:gravity="end"/>
+
             </LinearLayout>
-            <ImageView
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/purple_node_bg"/>
 
         </LinearLayout>
     </LinearLayout>

@@ -1,8 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="purple_500">#6200EE</color>
-
-
+    
+    <!-- Primary Colors - Modern Purple/Indigo Gradient -->
+    <color name="primary">#6366F1</color>
+    <color name="primary_dark">#4F46E5</color>
+    <color name="primary_light">#8B5CF6</color>
+    <color name="primary_variant">#7C3AED</color>
+    
+    <!-- Secondary Colors - Teal Accent -->
+    <color name="secondary">#14B8A6</color>
+    <color name="secondary_dark">#0D9488</color>
+    <color name="secondary_light">#2DD4BF</color>
+    
+    <!-- Surface & Background Colors -->
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F8FAFC</color>
+    <color name="background">#F9FAFB</color>
+    <color name="background_dark">#1E293B</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#1F2937</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="text_hint">#9CA3AF</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    
+    <!-- Chat Bubble Colors -->
+    <color name="chat_bubble_received">#F3F4F6</color>
+    <color name="chat_bubble_received_text">#1F2937</color>
+    <color name="chat_bubble_sent">#6366F1</color>
+    <color name="chat_bubble_sent_text">#FFFFFF</color>
+    
+    <!-- Gradient Colors -->
+    <color name="gradient_start">#6366F1</color>
+    <color name="gradient_middle">#7C3AED</color>
+    <color name="gradient_end">#8B5CF6</color>
+    
+    <!-- UI Element Colors -->
+    <color name="divider">#E5E7EB</color>
+    <color name="border">#D1D5DB</color>
+    <color name="input_background">#F9FAFB</color>
+    <color name="card_background">#FFFFFF</color>
+    
+    <!-- Status Colors -->
+    <color name="success">#10B981</color>
+    <color name="error">#EF4444</color>
+    <color name="warning">#F59E0B</color>
+    
+    <!-- Legacy compatibility -->
+    <color name="purple_500">#6366F1</color>
 </resources>
