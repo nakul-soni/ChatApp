@@ -8,25 +8,33 @@ import java.util.TimeZone;
 
 public class ChatMessage {
     String senderId;
+    String senderUsername;
     String text;
     long time;
     boolean isMine;
 
-    //Constructor
+    // Constructor
 
     public ChatMessage(String senderId, String text, long time) {
         this.senderId = senderId;
         this.text = text;
         this.time = time;
 
-
     }
 
-    //Empty Constructor
+    // Full Constructor with sender username
+    public ChatMessage(String senderId, String senderUsername, String text, long time) {
+        this.senderId = senderId;
+        this.senderUsername = senderUsername;
+        this.text = text;
+        this.time = time;
+    }
+
+    // Empty Constructor
     public ChatMessage() {
     }
 
-    //Getters and Setters
+    // Getters and Setters
     public String getSenderId() {
         return senderId;
     }
@@ -51,9 +59,17 @@ public class ChatMessage {
         this.time = time;
     }
 
+    public String getSenderUsername() {
+        return senderUsername;
+    }
+
+    public void setSenderUsername(String senderUsername) {
+        this.senderUsername = senderUsername;
+    }
+
     public boolean isMine() {
 
-        if(senderId.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+        if (senderId.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
             return true;
         }
         return false;
@@ -63,8 +79,7 @@ public class ChatMessage {
         isMine = mine;
     }
 
-
-    public String convertTime(){
+    public String convertTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         Date date = new Date(getTime());
         sdf.setTimeZone(TimeZone.getDefault());

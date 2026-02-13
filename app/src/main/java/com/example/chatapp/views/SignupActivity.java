@@ -17,29 +17,31 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.chatapp.R;
+import com.example.chatapp.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignupActivity extends AppCompatActivity {
 
-    EditText newuserNameET,newPasswordET,newEmailET, reEnterPasswordET;
+    EditText newuserNameET, newPasswordET, newEmailET, reEnterPasswordET;
     Button registerBtn;
     TextView loginLink;
 
-    //FireBase Authentication
+    // FireBase Authentication
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseUser currentUser;
 
-    //Firebase Connection
+    // Firebase Connection
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     private CollectionReference collectionReference = firebaseFirestore.collection("Users");
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,20 +60,20 @@ public class SignupActivity extends AppCompatActivity {
         registerBtn = findViewById(R.id.register_btn);
         loginLink = findViewById(R.id.loginLink);
 
-        firebaseAuth =FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
 
-        //Listening for the changes in the authentication state and respond accordingly
-        //when the state changed(if user sign in or sign out)
-        authStateListener= new FirebaseAuth.AuthStateListener() {
+        // Listening for the changes in the authentication state and respond accordingly
+        // when the state changed(if user sign in or sign out)
+        authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 currentUser = firebaseAuth.getCurrentUser();
 
-                //Check if the user is logged in or not
+                // Check if the user is logged in or not
                 if (currentUser != null) {
-                    //The user is already signed in
+                    // The user is already signed in
                 } else {
-                    //The user is signed out
+                    // The user is signed out
                 }
             }
         };
@@ -80,17 +82,14 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
-                if ( !TextUtils.isEmpty(newEmailET.getText().toString())
-                        &&!TextUtils.isEmpty(newuserNameET.getText().toString())
-                        &&!TextUtils.isEmpty(newPasswordET.getText().toString())
-                )
-                {
+                if (!TextUtils.isEmpty(newEmailET.getText().toString())
+                        && !TextUtils.isEmpty(newuserNameET.getText().toString())
+                        && !TextUtils.isEmpty(newPasswordET.getText().toString())) {
                     String email = newEmailET.getText().toString().trim();
                     String name = newuserNameET.getText().toString().trim();
                     String password = newPasswordET.getText().toString().trim();
-                    CreateNewAccount(name,password,email);
-                }else{
+                    CreateNewAccount(name, password, email);
+                } else {
                     Toast.makeText(SignupActivity.this, "No Empty Fields are Allowed", Toast.LENGTH_SHORT).show();
                 }
 
@@ -99,26 +98,52 @@ public class SignupActivity extends AppCompatActivity {
             public void CreateNewAccount(
                     String name,
                     String password,
-                    String email
-            ){
+                    String email) {
 
-                //Checking if the strings we initialized are not empty using !(NOT operator) and
-                //TextUtils class
-                //Because we are not going to create an account with empty email,name,or,password.
+                // Checking if the strings we initialized are not empty using !(NOT operator)
+                // and
+                // TextUtils class
+                // Because we are not going to create an account with empty
+                // email,name,or,password.
                 if (!TextUtils.isEmpty(name)
-                        &&!TextUtils.isEmpty(password)
-                        &&!TextUtils.isEmpty(email)){
-                    firebaseAuth.createUserWithEmailAndPassword(email,password)
+                        && !TextUtils.isEmpty(password)
+                        && !TextUtils.isEmpty(email)) {
+                    firebaseAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if(task.isSuccessful()){
-                                        Toast.makeText(SignupActivity.this, "The account is created successfully", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(SignupActivity.this, GroupsActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    }else {
-                                        Toast.makeText(SignupActivity.this, "Account Already Exists", Toast.LENGTH_SHORT).show();
+                                    if (task.isSuccessful()) {
+                                        // Get the newly created user's ID
+                                        String userId = firebaseAuth.getCurrentUser().getUid();
+
+                                        // Create User object
+                                        User newUser = new User(userId, name, email);
+
+                                        // Save user profile to Firebase Realtime Database
+                                        DatabaseReference usersRef = FirebaseDatabase.getInstance()
+                                                .getReference("users");
+                                        usersRef.child(userId).setValue(newUser)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(SignupActivity.this,
+                                                                    "Account created successfully!", Toast.LENGTH_SHORT)
+                                                                    .show();
+                                                            Intent intent = new Intent(SignupActivity.this,
+                                                                    GroupsActivity.class);
+                                                            startActivity(intent);
+                                                            finish();
+                                                        } else {
+                                                            Toast.makeText(SignupActivity.this,
+                                                                    "Failed to save user profile", Toast.LENGTH_SHORT)
+                                                                    .show();
+                                                        }
+                                                    }
+                                                });
+                                    } else {
+                                        Toast.makeText(SignupActivity.this, "Account Already Exists",
+                                                Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
@@ -126,15 +151,14 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-     loginLink.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View v) {
-             Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-             startActivity(intent);
-             finish();
-         }
-     });
+        loginLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
-
 
 }

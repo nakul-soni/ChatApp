@@ -33,6 +33,17 @@
                 android:layout_marginEnd="48dp"
                 android:background="@drawable/left_node_bg">
 
+                <!-- Sender Name -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{chatMessage.senderUsername ?? `Unknown`}"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="2dp"
+                    android:gravity="start"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

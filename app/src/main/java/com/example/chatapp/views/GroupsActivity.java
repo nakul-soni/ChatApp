@@ -44,10 +44,11 @@ public class GroupsActivity extends AppCompatActivity {
     private ActivityGroupsBinding activityGroupsBinding;
     private MyViewModel myViewModel;
 
-    //Dialog
+    // Dialog
     private Dialog chatGroupDialog;
 
     private FloatingActionButton Fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,18 +62,18 @@ public class GroupsActivity extends AppCompatActivity {
 
         activityGroupsBinding = DataBindingUtil.setContentView(this, R.layout.activity_groups);
 
-        //Defining the ViewModel
+        // Defining the ViewModel
         myViewModel = new ViewModelProvider(this).get(MyViewModel.class);
 
-        //RecyclerView with DataBinding
+        // RecyclerView with DataBinding
         recyclerView = activityGroupsBinding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //Setup an Observer to listen to the changes in the Livedata Object
+        // Setup an Observer to listen to the changes in the Livedata Object
         myViewModel.getGroupsList().observe(this, new Observer<List<ChatGroups>>() {
             @Override
             public void onChanged(List<ChatGroups> chatGroups) {
-                //The updated data is recieved as 'chatGroups' parameter in onChanged()
+                // The updated data is recieved as 'chatGroups' parameter in onChanged()
 
                 chatGroupsArrayList = new ArrayList<>();
                 chatGroupsArrayList.addAll(chatGroups);
@@ -100,30 +101,46 @@ public class GroupsActivity extends AppCompatActivity {
             }
         });
 
+        activityGroupsBinding.navView
+                .setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        int id = item.getItemId();
+                        if (id == R.id.nav_logout) {
+                            Toast.makeText(GroupsActivity.this, "Logging Out...", Toast.LENGTH_SHORT).show();
+                            FirebaseAuth.getInstance().signOut();
+                            startActivity(new Intent(GroupsActivity.this, LoginActivity.class));
+                            finish();
+                        }
+                        return true;
+                    }
+                });
 
-        activityGroupsBinding.navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        // Load current user profile and display in drawer header
+        myViewModel.getCurrentUserProfile().observe(this, new Observer<com.example.chatapp.model.User>() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                if (id == R.id.nav_logout) {
-                    Toast.makeText(GroupsActivity.this, "Logging Out...", Toast.LENGTH_SHORT).show();
-                    FirebaseAuth.getInstance().signOut();
-                    startActivity(new Intent(GroupsActivity.this, LoginActivity.class));
-                    finish();
+            public void onChanged(com.example.chatapp.model.User user) {
+                if (user != null) {
+                    // Get the header view and bind user data
+                    View headerView = activityGroupsBinding.navView.getHeaderView(0);
+                    if (headerView != null) {
+                        com.example.chatapp.databinding.DrawerHeaderBinding headerBinding = com.example.chatapp.databinding.DrawerHeaderBinding
+                                .bind(headerView);
+                        headerBinding.setUser(user);
+                    }
                 }
-                return true;
             }
         });
 
     }
 
-    public void showDialog(){
+    public void showDialog() {
         chatGroupDialog = new Dialog(this);
         chatGroupDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         View view = LayoutInflater.from(this)
                 .inflate(R.layout.dialog_layout,
-                 null);
+                        null);
         chatGroupDialog.setContentView(view);
         chatGroupDialog.show();
 
@@ -133,13 +150,20 @@ public class GroupsActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String groupName = edt.getText().toString();
-                Toast.makeText(GroupsActivity.this, "Your Group Name is "+groupName, Toast.LENGTH_SHORT).show();
-                myViewModel.createNewGroup(groupName);
+                String groupName = edt.getText().toString().trim();
+
+                if (groupName.isEmpty()) {
+                    Toast.makeText(GroupsActivity.this, "Please enter a group name", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Navigate to SelectMembersActivity
+                Intent intent = new Intent(GroupsActivity.this, SelectMembersActivity.class);
+                intent.putExtra("GROUP_NAME", groupName);
+                startActivity(intent);
                 chatGroupDialog.dismiss();
             }
         });
     }
-
 
 }

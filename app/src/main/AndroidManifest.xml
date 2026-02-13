@@ -32,6 +32,15 @@
         <activity
             android:name=".views.GroupsActivity"
             android:exported="false" />
+        <activity
+            android:name=".views.SelectMembersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".views.GroupMembersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".views.AddMembersActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

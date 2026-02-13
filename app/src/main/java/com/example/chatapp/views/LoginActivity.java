@@ -30,7 +30,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     MyViewModel myViewModel;
-    FirebaseAuth firebaseAuth ;
+    FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,22 +45,22 @@ public class LoginActivity extends AppCompatActivity {
 
         myViewModel = new ViewModelProvider(this).get(MyViewModel.class);
 
-        ActivityLoginBinding activityLoginBinding = DataBindingUtil.setContentView(this , R.layout.activity_login);
+        ActivityLoginBinding activityLoginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         activityLoginBinding.setVmodel(myViewModel);
 
-        //FireBase Authentication
+        // FireBase Authentication
         firebaseAuth = FirebaseAuth.getInstance();
         activityLoginBinding.signinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!TextUtils.isEmpty(activityLoginBinding.emailEdt.getText().toString())
-                &&!TextUtils.isEmpty(activityLoginBinding.passwordEdt.getText().toString())
-                &&!TextUtils.isEmpty(activityLoginBinding.usernameEdt.getText().toString())) {
+                        && !TextUtils.isEmpty(activityLoginBinding.passwordEdt.getText().toString())) {
                     String Email = activityLoginBinding.emailEdt.getText().toString().trim();
                     String Password = activityLoginBinding.passwordEdt.getText().toString().trim();
-                    String Username = activityLoginBinding.usernameEdt.getText().toString().trim();
-                    SignInUser(Email,Password,Username);
+                    SignInUser(Email, Password);
 
+                } else {
+                    Toast.makeText(LoginActivity.this, "Please enter Email and Password", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void SignInUser(String email, String pass, String name) {
+    public void SignInUser(String email, String pass) {
         // ✅ First check if email or password is empty
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
             Toast.makeText(LoginActivity.this, "Please enter Email and Password", Toast.LENGTH_SHORT).show();
@@ -92,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
+                            Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
                             // Login success → go to GroupsActivity
                             Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
                             startActivity(intent);
@@ -103,11 +104,14 @@ public class LoginActivity extends AppCompatActivity {
                         public void onFailure(@NonNull Exception e) {
                             // Login failed → identify why
                             if (e instanceof FirebaseAuthInvalidUserException) {
-                                Toast.makeText(LoginActivity.this, "User not found or disabled.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "User not found. Please sign up first.",
+                                        Toast.LENGTH_SHORT).show();
                             } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                                Toast.makeText(LoginActivity.this, "Invalid password.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Invalid email or password.", Toast.LENGTH_SHORT)
+                                        .show();
                             } else {
-                                Toast.makeText(LoginActivity.this, "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Login failed: " + e.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

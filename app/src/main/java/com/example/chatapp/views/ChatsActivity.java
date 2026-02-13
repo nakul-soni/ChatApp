@@ -46,33 +46,39 @@ public class ChatsActivity extends AppCompatActivity {
             return insets;
         });
 
-        activityChatsBinding = DataBindingUtil.setContentView(this,R.layout.activity_chats);
+        activityChatsBinding = DataBindingUtil.setContentView(this, R.layout.activity_chats);
         myViewModel = new ViewModelProvider(this).get(MyViewModel.class);
 
-        //RecyclerView With DataBinding
+        // RecyclerView With DataBinding
         recyclerView = activityChatsBinding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-        //Getting groups name from the the clicked item in the GroupActivity
+        // Getting group ID from the clicked item in the GroupActivity
+        String groupId = getIntent().getStringExtra("GROUP_ID");
         String groupName = getIntent().getStringExtra("GROUP_NAME");
 
-        myViewModel.getMessageMutableLiveData(groupName).observe(this, new Observer<List<ChatMessage>>() {
+        // Set group name in header if provided
+        if (groupName != null && !groupName.isEmpty()) {
+            activityChatsBinding.groupNameTextView.setText(groupName);
+        }
+
+        myViewModel.getMessageMutableLiveData(groupId).observe(this, new Observer<List<ChatMessage>>() {
             @Override
             public void onChanged(List<ChatMessage> chatMessages) {
                 messageList = new ArrayList<>();
                 messageList.addAll(chatMessages);
 
-                chatAdapter = new ChatAdapter(messageList,getApplicationContext());
+                chatAdapter = new ChatAdapter(messageList, getApplicationContext());
                 recyclerView.setAdapter(chatAdapter);
                 chatAdapter.notifyDataSetChanged();
 
-                //Scroll to the latest message added
-                int latestPosition = chatAdapter.getItemCount()-1;
+                // Scroll to the latest message added
+                int latestPosition = chatAdapter.getItemCount() - 1;
 
-                if (latestPosition>0) {
+                if (latestPosition > 0) {
                     recyclerView.smoothScrollToPosition(latestPosition);
-            }
+                }
             }
         });
 
@@ -82,7 +88,7 @@ public class ChatsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String msg = activityChatsBinding.edittextChatMessage.getText().toString();
-                myViewModel.sendMessage(msg,groupName);
+                myViewModel.sendMessage(msg, groupId);
                 activityChatsBinding.edittextChatMessage.getText().clear();
             }
         });
